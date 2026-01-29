@@ -58,7 +58,6 @@ def main():
                     game.double(hand)
                 elif action == "p":
                     game.split(hand)
-                    break  # move to next hand
                 elif action == "surrender":
                     game.surrender(hand)
                 else:
