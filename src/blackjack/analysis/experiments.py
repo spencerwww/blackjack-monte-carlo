@@ -4,6 +4,7 @@ from blackjack.engine.game import Game
 shoe = Shoe(n_decks=6)
 
 game = Game(shoe)
+bet = 25
 game.deal_initial()
 
 print("Dealer upcard:", game.dealer.cards[0])

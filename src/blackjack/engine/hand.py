@@ -1,8 +1,12 @@
 BLACKJACK = 21
 
 class Hand:
-    def __init__(self):
+    def __init__(self, bet=1.0):
         self.cards = []
+        self.bet = bet
+        self.is_active = True
+        self.is_surrendered = False
+        self.is_insured = False
 
     def add(self, card):
         self.cards.append(card)
