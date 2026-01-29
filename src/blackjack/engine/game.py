@@ -15,7 +15,7 @@ class Game:
             self.player_hands[0].add(self.shoe.draw())
             self.dealer.add(self.shoe.draw())
         
-        if self.player_hands[0].is_blackjack == True:
+        if self.player_hands[0].is_blackjack() == True:
             print("BLACKJACK")
             self.player_hands[0].is_active = False
 
