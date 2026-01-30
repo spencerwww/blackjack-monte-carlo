@@ -11,5 +11,5 @@ def test_draw_removes_card():
 
 def test_rig_shoe():
     shoe = Shoe(n_decks=1)
-    shoe.rig([7,9,0,2,9,4,5])
+    shoe.rig([5,4,9,2,0,9,7])
     assert shoe.cards[:7] == [5,4,9,2,0,9,7]

@@ -23,7 +23,7 @@ class Shoe:
         self.cards = self.cards[:-cut]
 
     def draw(self):
-        return self.cards.pop()
+        return self.cards.pop(0)
     
     def rig(self, cards):
-        self.cards = list(reversed(cards)) + self.cards
+        self.cards = list(cards) + self.cards
