@@ -6,7 +6,7 @@ class Shoe:
         self.lower_cut = lower_cut
         self.upper_cut = upper_cut
         self.cards = self._build_shoe()
-        self._cut()
+        # self._cut()
 
     def _build_shoe(self):
         ranks = [1,2,3,4,5,6,7,8,9,10,10,10,10]
@@ -24,3 +24,6 @@ class Shoe:
 
     def draw(self):
         return self.cards.pop()
+    
+    def rig(self, cards):
+        self.cards = list(reversed(cards)) + self.cards

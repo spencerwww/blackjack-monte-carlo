@@ -19,6 +19,8 @@ class Game:
             print("BLACKJACK")
             self.player_hands[0].is_active = False
 
+        if self.dealer.is_blackjack() == True:
+            self.player_hands[0].is_active = False
 
 # actions: hit, stand, double, split, surrender, insurance
 
@@ -108,6 +110,3 @@ class Game:
             total += self.resolve_hand(hand)
 
         return total
-
-
-        

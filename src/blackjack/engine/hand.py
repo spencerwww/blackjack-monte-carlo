@@ -11,7 +11,7 @@ class Hand:
     def add(self, card):
         self.cards.append(card)
 
-    def value(self):
+    def value(self) -> int:
         total = sum(self.cards)
         has_ace = 1 in self.cards
 
@@ -23,8 +23,8 @@ class Hand:
 
         return total
 
-    def is_blackjack(self):
+    def is_blackjack(self) -> bool:
         return len(self.cards) == 2 and self.value() == 21
 
-    def is_bust(self):
+    def is_bust(self) -> bool:
         return self.value() > 21

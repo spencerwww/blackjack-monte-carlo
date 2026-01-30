@@ -39,9 +39,6 @@ def main():
 
         # play all hands (including splits)
 
-        if game.dealer.is_blackjack() == True:
-            game.player_hands[0].is_active = False
-
         i = 0
         while i < len(game.player_hands):
             hand = game.player_hands[i]
