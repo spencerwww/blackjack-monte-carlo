@@ -10,7 +10,7 @@ The focus of the project is correctness, system design, and statistical evaluati
 
   - Clean separation between game logic, rules, strategies, and simulation
 
-  - Event-driven hand resolution (hit, stand, double, split, surrender)
+  - Event-driven hand resolution (hit, stand, double, split, insurance, surrender)
 
 - Rule configurability
 
@@ -28,7 +28,7 @@ The focus of the project is correctness, system design, and statistical evaluati
 
   - Pluggable strategy interface
 
-  - Supports basic strategy, card counting, and betting policies
+  - Supports basic strategy, card counting, deviation and betting policies
 
   - Manual action driver for engine validation
 
@@ -60,7 +60,7 @@ The engine models blackjack as a stateful stochastic process:
 
 - `Rules`: encapsulates table-specific constraints
 
-Actions (`hit`, `stand`, `double`, `split`, `surrender`) mutate game state deterministically, enabling precise testing and reproducibility.
+Actions (`hit`, `stand`, `double`, `split`, `insurance`, `surrender`) mutate game state deterministically, enabling precise testing and reproducibility.
 
 ## Simulation Methodology
 
@@ -70,7 +70,7 @@ Strategies are evaluated via Monte Carlo simulation:
 
 2. Repeatedly simulate independent rounds
 
-3. Record P&L per round
+3. Record PnL per round
 
 4. Estimate:
 
