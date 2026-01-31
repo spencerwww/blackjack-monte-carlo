@@ -1,23 +1,39 @@
 from blackjack.engine.shoe import Shoe
 from blackjack.engine.game import Game
 
-def print_state(game):
+def print_state(game: Game, conclusion: bool):
     print("\n========================")
-    print("Dealer:", game.dealer.cards[0])
+    if conclusion:
+        print("Dealer:", game.dealer.cards, "=>", game.dealer.value())
+    else:
+        print("Dealer:", game.dealer.cards[0])
     for i, hand in enumerate(game.player_hands):
         print(f"Hand {i}: {hand.cards} | value={hand.value()} | bet={hand.bet}")
     print("========================")
 
-def print_conclusion(game, shoe):
-    print("\n========================")
-    print("Dealer:", game.dealer.cards, "=>", game.dealer.value())
-    for i, hand in enumerate(game.player_hands):
-        print(f"Hand {i}: {hand.cards} | value={hand.value()} | bet={hand.bet}")
-    print("Cards left before cut: ", len(shoe.cards))
-    print("========================")
+def conclude_round(game: Game):
+    print_state(game, True)
+
+    pnl = game.resolve_round()
+
+    print("\nPNL:", pnl)
+
+def check_immediate_round_end(game: Game) -> bool:
+    # check for player blackjack
+    if (game.player_hands[0].is_blackjack()):
+        return False
+    
+    # check for dealer blackjack (upcard is 10)
+    if game.dealer.cards[0] == 10 and game.dealer.is_blackjack():
+        return False
+    
+    return True
+    
+
 
 def main():
     shoe = Shoe(n_decks=6)
+    # shoe.rig([7,1,10,9])
 
     game = Game(shoe)
 
@@ -25,17 +41,24 @@ def main():
     bet = 10
 
     while True:
+
         game.start_round(bet)
 
-        # if game.dealer.cards[0] == 1:
-        #         print_state(game)
-        #         action = input("Insurance (Y/N)").strip()
+        game.player_hands[0].is_active = check_immediate_round_end(game)
 
-        #         if action == "Y":
-        #             game.insurance(game.player_hands[0])
+        # if dealer upcard is ace, offer insurance
+        if game.dealer.cards[0] == 1:
+            print_state(game, False)
+            action = input("Insurance (y to accept): ").strip()
 
-        #         if game.dealer.cards[1] == 10:
-        #             game.player_hands[0].is_active = False
+            if action == "y":
+                game.player_hands[0].is_insured = True
+                print("Insurance accepted")
+            else:
+                print("Insurance denied")
+
+            if game.dealer.is_blackjack():
+                game.player_hands[0].is_active = False
 
         # play all hands (including splits)
 
@@ -44,7 +67,7 @@ def main():
             hand = game.player_hands[i]
                 
             while hand.is_active:
-                print_state(game)
+                print_state(game, False)
                 action = input("Action? (h / s / d / p / surrender): ").strip()
 
                 if action == "h":
@@ -65,13 +88,12 @@ def main():
         # dealer + settlement
         print("\n--- Dealer plays ---")
         game.play_dealer()
-        print_conclusion(game, shoe)
-
+        print_state(game,True)
         pnl = game.resolve_round()
         bankroll += pnl
-
-        print("\nPNL:", pnl)
-        print("Bankroll:", bankroll)
+        print("PnL: ", pnl)
+        print("Bankroll: ", bankroll)
+        
 
 
 if __name__ == "__main__":

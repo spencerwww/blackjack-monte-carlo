@@ -8,18 +8,13 @@ class Game:
 
     def start_round(self, bet: float):
         self.player_hands = [Hand(bet)]
-        self.dealer = Hand(bet=0)
+        self.dealer = Hand()
 
         # deal initial
         for _ in range(2):
             self.player_hands[0].add(self.shoe.draw())
             self.dealer.add(self.shoe.draw())
         
-        if self.player_hands[0].is_blackjack() == True:
-            self.player_hands[0].is_active = False
-
-        if self.dealer.is_blackjack() == True:
-            self.player_hands[0].is_active = False
 
 # actions: hit, stand, double, split, surrender, insurance
 
@@ -81,28 +76,37 @@ class Game:
     def resolve_hand(self, hand: Hand) -> float:
         if hand.is_surrendered:
             return -0.5 * hand.bet
-
-        if hand.is_blackjack() and not self.dealer.is_blackjack():
-            return 1.5 * hand.bet
+        
+        pnl = 0.0
+        
+        if hand.is_insured == True:
+            if self.dealer.is_blackjack():
+                pnl += hand.bet
+                print("Insurance bet paid out 2:1")
+            else:
+                pnl -= 0.5 * hand.bet
+                print("Insurance bet subtracted")
 
         if hand.is_bust():
             return -hand.bet
 
         if self.dealer.is_bust():
-            return hand.bet
+            return hand.bet   
 
+        if hand.is_blackjack() and not self.dealer.is_blackjack():
+            pnl *=1.5
+                
         pv = hand.value()
         dv = self.dealer.value()
 
         if pv > dv:
-            return hand.bet
+            pnl += hand.bet
         elif pv < dv:
-            return -hand.bet
-        else:
-            return 0.0
+            pnl -= hand.bet
+        
+        return pnl
 
     def resolve_round(self) -> float:
-        self.play_dealer()
 
         total = 0.0
         for hand in self.player_hands:

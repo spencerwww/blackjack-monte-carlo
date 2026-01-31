@@ -25,5 +25,5 @@ class Shoe:
     def draw(self):
         return self.cards.pop(0)
     
-    def rig(self, cards):
-        self.cards = list(cards) + self.cards
+    def rig(self, rig_cards):
+        self.cards = rig_cards + self.cards

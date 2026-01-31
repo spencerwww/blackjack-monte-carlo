@@ -3,12 +3,14 @@ BLACKJACK = 21
 class Hand:
     def __init__(self, bet=1.0):
         self.cards = []
+        if bet <= 0:
+            raise Exception("Bet must be greater than zero")
         self.bet = bet
         self.is_active = True
         self.is_surrendered = False
         self.is_insured = False
 
-    def add(self, card):
+    def add(self, card: int):
         self.cards.append(card)
 
     def value(self) -> int:
