@@ -29,11 +29,9 @@ def check_immediate_round_end(game: Game) -> bool:
     
     return True
     
-
-
 def main():
     shoe = Shoe(n_decks=6)
-    # shoe.rig([7,1,10,9])
+    shoe.rig([1,10,10,3,1,10])
 
     game = Game(shoe)
 
@@ -44,7 +42,7 @@ def main():
 
         game.start_round(bet)
 
-        game.player_hands[0].is_active = check_immediate_round_end(game)
+        # game.player_hands[0].is_active = check_immediate_round_end(game)
 
         # if dealer upcard is ace, offer insurance
         if game.dealer.cards[0] == 1:

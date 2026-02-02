@@ -5,6 +5,17 @@ class Game:
         self.shoe = shoe
         self.player_hands = []
         self.dealer = Hand()
+    
+    def check_immediate_round_end(self) -> bool:
+        # check for player blackjack
+        if (self.player_hands[0].is_blackjack()):
+            return True
+    
+        # check for dealer blackjack (upcard is 10)
+        if self.dealer.cards[0] == 10 and self.dealer.is_blackjack():
+            return True
+        
+        return False
 
     def start_round(self, bet: float):
         self.player_hands = [Hand(bet)]
@@ -15,7 +26,8 @@ class Game:
             self.player_hands[0].add(self.shoe.draw())
             self.dealer.add(self.shoe.draw())
         
-
+        self.player_hands[0].is_active = not self.check_immediate_round_end()
+    
 # actions: hit, stand, double, split, surrender, insurance
 
     def hit(self, hand: Hand):
@@ -62,7 +74,9 @@ class Game:
 
 #  Dealer
 
-    def play_dealer(self):
+    def play_dealer(self): 
+        if self.player_hands[0].is_blackjack:
+            return
         while True:
             val = self.dealer.value()
             # S17 for now
@@ -88,13 +102,13 @@ class Game:
                 print("Insurance bet subtracted")
 
         if hand.is_bust():
-            return -hand.bet
+            pnl -= hand.bet
 
         if self.dealer.is_bust():
-            return hand.bet   
+            pnl += hand.bet   
 
         if hand.is_blackjack() and not self.dealer.is_blackjack():
-            pnl *=1.5
+            pnl += 0.5 * hand.bet
                 
         pv = hand.value()
         dv = self.dealer.value()
