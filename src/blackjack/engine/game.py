@@ -75,7 +75,7 @@ class Game:
 #  Dealer
 
     def play_dealer(self): 
-        if self.player_hands[0].is_blackjack:
+        if self.player_hands[0].is_blackjack():
             return
         while True:
             val = self.dealer.value()
@@ -101,14 +101,13 @@ class Game:
                 pnl -= 0.5 * hand.bet
                 print("Insurance bet subtracted")
 
-        if hand.is_bust():
-            pnl -= hand.bet
+        if hand.is_blackjack() and not self.dealer.is_blackjack():
+            pnl += 0.5 * hand.bet
+        elif hand.is_bust():
+            return pnl - hand.bet
 
         if self.dealer.is_bust():
             pnl += hand.bet   
-
-        if hand.is_blackjack() and not self.dealer.is_blackjack():
-            pnl += 0.5 * hand.bet
                 
         pv = hand.value()
         dv = self.dealer.value()

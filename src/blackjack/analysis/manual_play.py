@@ -31,7 +31,7 @@ def check_immediate_round_end(game: Game) -> bool:
     
 def main():
     shoe = Shoe(n_decks=6)
-    shoe.rig([1,10,10,3,1,10])
+    # shoe.rig([1,10,10,1])
 
     game = Game(shoe)
 
