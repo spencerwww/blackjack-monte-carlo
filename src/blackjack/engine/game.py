@@ -83,6 +83,8 @@ class Game:
             if val < 17:
                 self.dealer.add(self.shoe.draw())
             else:
+                if val > 21:
+                    self.dealer.is_bust = True
                 break
 
 #   Resolution
