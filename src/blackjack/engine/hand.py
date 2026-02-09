@@ -9,6 +9,7 @@ class Hand:
         self.is_active = True
         self.is_surrendered = False
         self.is_insured = False
+        self.is_split = False
 
     def add(self, card: int):
         self.cards.append(card)
@@ -18,7 +19,7 @@ class Hand:
         has_ace = 1 in self.cards
 
         if len(self.cards) == 2 and total == 11 and has_ace:
-            return 21  # natural blackjack
+            return 21
 
         if has_ace and total + 10 <= 21:
             return total + 10

@@ -31,31 +31,55 @@ class Game:
 # actions: hit, stand, double, split, surrender, insurance
 
     def hit(self, hand: Hand):
+        if not hand.is_active:
+            raise ValueError("Player action has closed")
+        
         hand.add(self.shoe.draw())
         if hand.is_bust() == True or hand.value() == 21:
             hand.is_active = False
 
     def stand(self, hand: Hand):
+        if not hand.is_active:
+            raise ValueError("Player action has closed")
+        
         hand.is_active = False
 
     def double(self, hand: Hand):
+        if not hand.is_active:
+            raise ValueError("Player action has closed")
+        
+        if len(hand.cards) > 2:
+            raise ValueError("Cannot double when hand has more than two cards")
         hand.bet *= 2
         hand.add(self.shoe.draw())
         hand.is_active = False
 
     def split(self, hand: Hand):
+        if hand.cards[0] != hand.cards[1]:
+            raise ValueError("Cannot split when cards are different")
+        
+        if len(hand.cards) > 2:
+            raise ValueError("Cannot split when hand has more than two cards")
+        
         split_hand = Hand(bet = hand.bet)
         split_hand.add(hand.cards[1])
         hand.cards.pop()
         hand.add(self.shoe.draw())
         split_hand.add(self.shoe.draw())
+        hand.is_split = True
+        split_hand.is_split = True
         self.player_hands.append(split_hand)
 
     def surrender(self, hand: Hand):
+        if len(hand.cards) > 2 or hand.is_split == True:
+            raise ValueError("Cannot surrender after initial action performed")
+
         hand.is_surrendered = True
         hand.is_active = False
     
     def insurance(self, hand: Hand):
+        if self.dealer.cards[0] != 1:
+            raise ValueError("Dealer has no ace, insurance is not offered")
         hand.is_insured = True
 
     # def perform_action(self, hand, action):
@@ -77,15 +101,8 @@ class Game:
     def play_dealer(self): 
         if self.player_hands[0].is_blackjack():
             return
-        while True:
-            val = self.dealer.value()
-            # S17 for now
-            if val < 17:
-                self.dealer.add(self.shoe.draw())
-            else:
-                if val > 21:
-                    self.dealer.is_bust = True
-                break
+        while self.dealer.value() < 17:
+            self.dealer.add(self.shoe.draw())
 
 #   Resolution
 
@@ -109,7 +126,7 @@ class Game:
             return pnl - hand.bet
 
         if self.dealer.is_bust():
-            pnl += hand.bet   
+            return pnl + hand.bet   
                 
         pv = hand.value()
         dv = self.dealer.value()

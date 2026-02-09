@@ -177,6 +177,8 @@ def test_resolve_hand_dealer_bust():
     hand = game.player_hands[0]
     game.stand(hand)
     game.play_dealer()
+    print(hand.cards)
+    print(game.dealer.cards)
     pnl = game.resolve_hand(hand)
     assert pnl == 1.0
 
