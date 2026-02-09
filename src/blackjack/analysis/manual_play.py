@@ -1,5 +1,6 @@
 from blackjack.engine.shoe import Shoe
 from blackjack.engine.game import Game
+import time
 
 def print_state(game: Game, conclusion: bool):
     print("\n========================")
@@ -35,10 +36,30 @@ def main():
 
     game = Game(shoe)
 
-    bankroll = 1000
-    bet = 10
+    bankroll: float = 1000
+
+    print("----------- BLACKJACK -----------")
+    print("BLACKJACK PAYS 3 TO 2")
+    print("DEALER MUST DRAW TO 16, STAND ON ALL 17S")
+    print("INSURANCE PAYS 1 TO 1")
 
     while True:
+        if bankroll <= 0:
+            print("----------- BANKRUPT -----------")
+            break
+
+        try:
+            bet = float(input("Place your bet (Min bet 10): ").strip())
+        except ValueError:
+            print("Bet must be a valid number")
+            continue
+        if bet < 10:
+            print("Minimum bet is 10")
+            continue
+        if bet > bankroll:
+            print("Bet larger than remaining bankroll")
+            continue
+
 
         game.start_round(bet)
 
@@ -66,17 +87,29 @@ def main():
                 
             while hand.is_active:
                 print_state(game, False)
-                action = input("Action? (h / s / d / p / surrender): ").strip()
+                print("Hit: h")
+                print("Stand: s")
+                if len(hand.cards) == 2:
+                    print ("Double: d")
+                if len(hand.cards) == 2 and hand.cards[0] == hand.cards[1]:
+                    print("Split: p")
+                if len(hand.cards) == 2 and not hand.is_split:
+                    print("Surrender: sur")
+
+                action = input("Action: ").strip()
 
                 if action == "h":
                     game.hit(hand)
                 elif action == "s":
                     game.stand(hand)
                 elif action == "d":
-                    game.double(hand)
+                    if (bet > 0.5 * bankroll):
+                        print("Not enough money to double")
+                    else:
+                        game.double(hand)
                 elif action == "p":
                     game.split(hand)
-                elif action == "surrender":
+                elif action == "sur":
                     game.surrender(hand)
                 else:
                     print("Invalid action")
@@ -91,6 +124,7 @@ def main():
         bankroll += pnl
         print("PnL: ", pnl)
         print("Bankroll: ", bankroll)
+        input("Press any key to continue").strip()
         
 
 
