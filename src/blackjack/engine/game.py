@@ -64,11 +64,13 @@ class Game:
         split_hand = Hand(bet = hand.bet)
         split_hand.add(hand.cards[1])
         hand.cards.pop()
+
         hand.add(self.shoe.draw())
         split_hand.add(self.shoe.draw())
+        
         hand.is_split = True
         split_hand.is_split = True
-        self.player_hands.append(split_hand)
+        self.player_hands.insert(self.player_hands.index(hand) + 1, split_hand)
 
     def surrender(self, hand: Hand):
         if len(hand.cards) > 2 or hand.is_split == True:
